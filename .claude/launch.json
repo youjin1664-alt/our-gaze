@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "static-preview",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "serve",
+        "-l",
+        "4173",
+        "/private/tmp/claude-501/-Users-jeong-yujin-Desktop-our-gaze/3710ae79-88bd-4a54-98c2-7c8f49aba06a/scratchpad/ghpages-sim"
+      ],
+      "port": 4173
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>Our Gaze — Ball Scene Preview</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1e1e1e;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  #stage {
+    position: relative;
+    width: 1440px;
+    height: 810px;
+    background: #F5F5F5;
+    overflow: hidden;
+  }
+  .ball {
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ball span {
+    color: rgba(255, 255, 255, 0.35);
+    font-weight: 700;
+    line-height: 1;
+    user-select: none;
+  }
+  .overlay-img {
+    position: absolute;
+    display: block;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+  <div id="stage">
+    <div id="balls"></div>
+    <img class="overlay-img" src="public/images/pc_project_header.png" alt="" style="top:0; left:0; width:1440px; height:80px;" />
+    <img class="overlay-img" src="public/images/ui.png" alt="" style="top:100px; left:43px; width:1354px; height:55px;" />
+    <img class="overlay-img" src="public/images/pc_project_footer.png" alt="" style="bottom:0; left:0; width:1440px; height:80px;" />
+  </div>
+
+  <script>
+    // Mirrors components/ballData.ts and components/constants.ts.
+    // Keep this in sync by hand whenever those files change.
+    var PALETTE = {
+      pink: "#FFCEE8",
+      hotPink: "#FF98ED",
+      purple: "#CE88FF",
+      blue: "#76A6FF",
+      skyBlue: "#0ED7FF",
+      mintBlue: "#4CFFF6",
+      coral: "#FF9276",
+      orange: "#FFB473",
+      softYellow: "#FCFFA6",
+      lime: "#B7FD7E",
+      emerald: "#00F18E",
+      mintGreen: "#89FFDB",
+    };
+
+    var BALLS = [
+      // top
+      { x: 444, y: 40, radius: 31, color: PALETTE.orange },
+      { x: 636, y: 35, radius: 33, color: PALETTE.mintBlue },
+      { x: 207, y: 130, radius: 47, color: PALETTE.skyBlue },
+      { x: 355, y: 140, radius: 40, color: PALETTE.emerald },
+      { x: 522, y: 170, radius: 100, color: PALETTE.purple },
+      { x: 1150, y: 25, radius: 36, color: PALETTE.lime },
+      { x: 1220, y: 100, radius: 63, color: PALETTE.hotPink },
+      { x: 1010, y: 130, radius: 51, color: PALETTE.coral },
+      { x: 670, y: 225, radius: 31, color: PALETTE.softYellow },
+      { x: 481, y: 245, radius: 41, color: PALETTE.mintGreen },
+
+      // upper-mid
+      { x: 170, y: 460, radius: 68, color: PALETTE.skyBlue, letter: "e" },
+      { x: 340, y: 340, radius: 57, color: PALETTE.blue },
+      { x: 585, y: 520, radius: 96, color: PALETTE.emerald, letter: "y" },
+      { x: 905, y: 390, radius: 56, color: PALETTE.pink, letter: "e" },
+      { x: 760, y: 395, radius: 36, color: PALETTE.purple },
+      { x: 1110, y: 430, radius: 72, color: PALETTE.mintBlue },
+      { x: 1340, y: 420, radius: 101, color: PALETTE.coral, letter: "e" },
+      { x: 1250, y: 270, radius: 65, color: PALETTE.lime },
+      { x: 1210, y: 440, radius: 34, color: PALETTE.skyBlue },
+      { x: 1400, y: 480, radius: 36, color: PALETTE.hotPink },
+
+      // lower-mid
+      { x: 525, y: 700, radius: 59, color: PALETTE.mintGreen, letter: "r" },
+      { x: 289, y: 790, radius: 52, color: PALETTE.orange, letter: "v" },
+      { x: 67, y: 620, radius: 43, color: PALETTE.purple },
+      { x: 70, y: 770, radius: 70, color: PALETTE.softYellow },
+      { x: 144, y: 610, radius: 44, color: PALETTE.blue },
+      { x: 850, y: 650, radius: 78, color: PALETTE.mintBlue },
+      { x: 1090, y: 605, radius: 53, color: PALETTE.emerald, letter: "l" },
+      { x: 1250, y: 725, radius: 104, color: PALETTE.pink, letter: "s" },
+      { x: 1240, y: 560, radius: 39, color: PALETTE.blue },
+      { x: 1380, y: 650, radius: 78, color: PALETTE.lime },
+      { x: 1440, y: 600, radius: 33, color: PALETTE.softYellow },
+
+      // bottom
+      { x: 729, y: 800, radius: 32, color: PALETTE.hotPink },
+      { x: 522, y: 760, radius: 80, color: PALETTE.pink },
+      { x: 929, y: 770, radius: 37, color: PALETTE.coral },
+      { x: 1100, y: 740, radius: 92, color: PALETTE.orange },
+      { x: 1250, y: 760, radius: 68, color: PALETTE.mintGreen },
+      { x: 1400, y: 760, radius: 48, color: PALETTE.skyBlue },
+      { x: 1400, y: 770, radius: 52, color: PALETTE.hotPink },
+    ];
+
+    var container = document.getElementById("balls");
+    BALLS.forEach(function (ball, index) {
+      var el = document.createElement("div");
+      el.className = "ball";
+      el.style.left = (ball.x - ball.radius) + "px";
+      el.style.top = (ball.y - ball.radius) + "px";
+      el.style.width = ball.radius * 2 + "px";
+      el.style.height = ball.radius * 2 + "px";
+      el.style.background = ball.color;
+      el.style.zIndex = String(index);
+      if (ball.letter) {
+        var span = document.createElement("span");
+        span.textContent = ball.letter;
+        span.style.fontSize = Math.round(ball.radius * 1.3) + "px";
+        el.appendChild(span);
+      }
+      container.appendChild(el);
+    });
+  </script>
+</body>
+</html>
